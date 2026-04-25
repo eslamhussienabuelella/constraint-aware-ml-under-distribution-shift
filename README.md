@@ -4,7 +4,7 @@
 ![SHAP](https://img.shields.io/badge/SHAP-Explainability-red)
 ![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange)
 
-# Constraint-Aware Machine Learning Under Distribution Shift
+# Constraint-Aware, Robust and Explainable Vehicle Fuel Consumption Prediction
 
 A reproducible machine learning framework for vehicle fuel-consumption prediction using physically informed constraints, interpretable modelling, and robustness testing under distribution shift.
 
