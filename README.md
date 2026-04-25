@@ -10,7 +10,7 @@ A reproducible machine learning framework for vehicle fuel-consumption predictio
 
 This repository contains the full implementation of the MSc thesis:
 
-> **Explainable and Constraint-Aware Machine Learning for Robust Vehicle Fuel Consumption Prediction**
+> **Constraint-Aware, Robust and Explainable Vehicle Fuel Consumption Prediction**
 
 ---
 
