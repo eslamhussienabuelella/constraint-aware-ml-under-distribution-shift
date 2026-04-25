@@ -1,0 +1,8 @@
+numpy>=1.26
+pandas>=2.2
+scikit-learn>=1.5
+matplotlib>=3.8
+seaborn>=0.13
+shap>=0.45
+category-encoders>=2.6
+jupyter
