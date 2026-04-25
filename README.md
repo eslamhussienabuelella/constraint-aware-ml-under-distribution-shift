@@ -1,6 +1,7 @@
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
 ![Pandas](https://img.shields.io/badge/Pandas-Data%20Processing-green)
 ![Scikit-learn](https://img.shields.io/badge/Scikit--Learn-ML-orange)
+![SHAP](https://img.shields.io/badge/SHAP-Explainability-red)
 ![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange)
 
 # Constraint-Aware Machine Learning Under Distribution Shift
@@ -15,50 +16,60 @@ This repository contains the full implementation of the MSc thesis:
 
 ## Project overview
 
-This project investigates how physical constraints affect predictive performance, interpretability, and robustness under out-of-distribution scenarios.
+This project investigates how physically informed constraints affect:
 
-The framework is structured into three modelling phases:
+- predictive performance  
+- interpretability  
+- robustness under distribution shift  
+- physical consistency of learned relationships  
+
+The framework evaluates three machine learning paradigms across progressively constrained modelling stages.
+
+---
+
+## Research questions
+
+This work addresses four core questions:
+
+1. Do physical constraints improve robustness under distribution shift?  
+2. How do interpretable linear models compare with ensemble models?  
+3. Can static vehicle design features predict fuel consumption reliably?  
+4. How stable are explanations under constrained learning?
+
+---
+
+## Modelling framework
+
+The framework is structured into three experimental phases:
 
 ### Phase A — Baseline Modelling
 
-Unconstrained machine learning models:
+Unconstrained models:
 
-- Linear Regression
-- Lasso Regression
-- Random Forest
+- Linear Regression  
+- Lasso Regression  
+- Random Forest  
 
 ---
 
 ### Phase B — Physics-Informed Feature Engineering
 
-Adds physically meaningful engineered features:
+Introduces engineered physically meaningful features:
 
-- power-to-weight proxy
-- mass-aerodynamic interaction
+- power-to-weight proxy  
+- mass-aerodynamic interaction  
 
 ---
 
 ### Phase C — Constraint-Aware Learning
 
-Imposes explicit physical constraints:
+Introduces explicit physical constraints:
 
 **Linear models**
-- non-negative coefficients
+- non-negative coefficients  
 
 **Random Forest**
-- monotonic constraints
-
----
-
-## Research objectives
-
-This work addresses five practical machine learning challenges:
-
-- target leakage prevention
-- model interpretability
-- physical consistency
-- robustness under distribution shift
-- early-design prediction feasibility
+- monotonic constraints  
 
 ---
 
@@ -77,10 +88,7 @@ constraint-aware-ml-under-distribution-shift/
 │   └── full_experiment_pipeline.ipynb
 │
 ├── src/
-│   ├── preprocessing/
-│   ├── modelling/
-│   ├── evaluation/
-│   └── visualisation/
+│   └── constraint_aware_ml/
 │
 ├── tests/
 │   └── test_pipeline.py
@@ -88,13 +96,7 @@ constraint-aware-ml-under-distribution-shift/
 ├── data/
 │   ├── raw/
 │   │   ├── fuel_consumption_ratings/
-│   │   │   ├── my1995-2014-fuel-consumption-ratings-5-cycle.csv
-│   │   │   └── my2015-2024-fuel-consumption-ratings.csv
-│   │   │
 │   │   └── vehicle_specifications/
-│   │       ├── 2011_en.csv
-│   │       ├── ...
-│   │       └── 2023_en.csv
 │   │
 │   └── processed/
 │       ├── fc_veh_spec_all.csv
@@ -114,22 +116,25 @@ constraint-aware-ml-under-distribution-shift/
 │       ├── in_domain_city_results.csv
 │       ├── manufacturer_holdout_ford_results.csv
 │       └── highway_transfer_results.csv
+│
+└── docs/
+    └── data_dictionary.md
 ```
 
 ---
 
 ## Dataset sources
 
-The framework integrates two Canadian open datasets:
+This framework integrates two Canadian open datasets.
 
-### 1. Fuel Consumption Ratings Dataset
+### Fuel Consumption Ratings Dataset
 
 Contains:
 
-- city fuel consumption
-- highway fuel consumption
-- combined fuel consumption
-- CO₂ emissions
+- city fuel consumption  
+- highway fuel consumption  
+- combined fuel consumption  
+- CO₂ emissions  
 
 Coverage:
 
@@ -139,15 +144,16 @@ Coverage:
 
 ---
 
-### 2. Vehicle Specifications Dataset
+### Vehicle Specifications Dataset
 
 Contains:
 
-- vehicle dimensions
-- engine specifications
-- curb weight
-- transmission
-- fuel type
+- engine size  
+- cylinders  
+- transmission  
+- fuel type  
+- curb weight  
+- vehicle dimensions  
 
 Coverage:
 
@@ -159,13 +165,13 @@ Coverage:
 
 ## Data integration pipeline
 
-The processed dataset was created through a fuzzy data integration workflow using:
+The final analytical dataset was built through a fuzzy integration pipeline using:
 
-- text normalisation
-- tokenisation
-- Jaccard similarity matching
-- tie-breaking logic
-- quality-control validation
+- text normalisation  
+- tokenisation  
+- Jaccard similarity matching  
+- tie-breaking logic  
+- quality-control validation  
 
 Workflow:
 
@@ -198,13 +204,15 @@ Integrated dataset
 
 ## Experimental design
 
-Three evaluation settings:
+Three robustness scenarios were tested.
+
+---
 
 ### 1. In-domain evaluation
 
-Training/testing on city-cycle data.
+Train and test on city-cycle fuel consumption.
 
-Results:
+Stored in:
 
 ```text
 results/tables/in_domain_city_results.csv
@@ -214,14 +222,14 @@ results/tables/in_domain_city_results.csv
 
 ### 2. Manufacturer hold-out (OOD)
 
-Ford completely excluded during training.
+Ford excluded entirely during training.
 
 Tests:
 
-- manufacturer generalisation
-- robustness under brand shift
+- out-of-distribution generalisation  
+- manufacturer robustness  
 
-Results:
+Stored in:
 
 ```text
 results/tables/manufacturer_holdout_ford_results.csv
@@ -231,18 +239,55 @@ results/tables/manufacturer_holdout_ford_results.csv
 
 ### 3. Cross-cycle transfer
 
-Train on city-cycle → test on highway-cycle.
+Train on city-cycle and test on highway-cycle.
 
 Tests:
 
-- cross-regulatory transfer
-- operational robustness
+- transfer robustness  
+- regulatory cycle shift  
 
-Results:
+Stored in:
 
 ```text
 results/tables/highway_transfer_results.csv
 ```
+
+---
+
+## Key performance summary
+
+### In-domain (best baseline)
+
+| Model | Phase | R² | RMSE |
+|---|---|---:|---:|
+| Random Forest | A | 0.9738 | 0.5746 |
+| Random Forest | B | 0.9739 | 0.5740 |
+| Random Forest | C | 0.9069 | 1.0832 |
+
+---
+
+### Manufacturer hold-out (Ford)
+
+Constraint-aware models reduce robustness degradation relative to unconstrained baselines.
+
+---
+
+### Cross-cycle transfer
+
+Constraint-aware Random Forest shows improved transfer stability under cycle shift.
+
+---
+
+## Robustness metrics
+
+Robustness is evaluated through:
+
+```text
+ΔRMSE = RMSE_shift − RMSE_in-domain
+ΔR²   = R²_shift − R²_in-domain
+```
+
+Lower degradation indicates stronger robustness.
 
 ---
 
@@ -256,22 +301,23 @@ results/figures/EDA/
 
 Includes:
 
-- model year distribution
-- missing value analysis
-- outlier detection
-- weight analysis
-- make distribution
-- vehicle class distribution
-- transmission distribution
-- fuel type distribution
-- feature correlation matrix
-- categorical relationship heatmaps
+- model year distribution  
+- missing values analysis  
+- outlier inspection  
+- vehicle make distribution  
+- class distribution  
+- transmission distribution  
+- fuel type distribution  
+- feature correlations  
+- categorical relationship heatmaps  
 
 ---
 
-## Model interpretability outputs
+## Interpretability analysis
 
-Stored by phase:
+Interpretability outputs are stored by phase.
+
+---
 
 ### Phase A
 
@@ -281,9 +327,9 @@ results/figures/PhaseA/
 
 Includes:
 
-- LR/Lasso coefficients
-- RF feature importance
-- SHAP beeswarm
+- coefficient importance  
+- feature importance  
+- SHAP beeswarm  
 
 ---
 
@@ -295,9 +341,9 @@ results/figures/PhaseB/
 
 Includes:
 
-- physics-informed LR/Lasso coefficients
-- RF feature importance
-- SHAP beeswarm
+- physics-informed coefficients  
+- feature importance  
+- SHAP beeswarm  
 
 ---
 
@@ -309,13 +355,13 @@ results/figures/PhaseC/
 
 Includes:
 
-- constraint-aware LR/Lasso coefficients
-- RF feature importance
-- SHAP beeswarm
+- constrained coefficients  
+- feature importance  
+- SHAP beeswarm  
 
 ---
 
-## Main modelling pipeline
+## Main pipeline
 
 ```text
 Integrated dataset
@@ -341,31 +387,31 @@ Interpretability analysis
 
 ### Preprocessing
 
-- robust scaling
-- binary encoding
-- feature engineering
+- robust scaling  
+- binary encoding  
+- feature engineering  
 
 ---
 
 ### Models
 
-- Linear Regression
-- Lasso Regression
-- Random Forest
+- Linear Regression  
+- Lasso Regression  
+- Random Forest  
 
 ---
 
 ### Constraints
 
-Linear:
+Linear models:
 
-```text
+```python
 positive=True
 ```
 
 Random Forest:
 
-```text
+```python
 monotonic_cst
 ```
 
@@ -373,9 +419,9 @@ monotonic_cst
 
 ### Explainability
 
-- model coefficients
-- feature importance
-- SHAP
+- coefficients  
+- feature importance  
+- SHAP analysis  
 
 ---
 
@@ -394,7 +440,7 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Or environment:
+Or use Conda:
 
 ```bash
 conda env create -f environment.yml
@@ -403,25 +449,49 @@ conda activate constraint-aware-ml
 
 ---
 
-## Run the notebook
+## Run experiments
+
+Launch notebook:
 
 ```bash
 jupyter notebook notebooks/
 ```
 
+Run tests:
+
+```bash
+pytest tests/
+```
+
+---
+
+## Reproducibility
+
+This repository includes:
+
+- raw datasets  
+- processed datasets  
+- experiment outputs  
+- figures  
+- result tables  
+- test scripts  
+- environment specification  
+
+to support full reproducibility.
+
 ---
 
 ## Skills demonstrated
 
-- machine learning
-- constraint-aware learning
-- robust modelling
-- distribution shift evaluation
-- explainable AI
-- SHAP analysis
-- feature engineering
-- data integration
-- reproducible pipelines
+- machine learning  
+- constraint-aware learning  
+- robustness testing  
+- distribution shift evaluation  
+- explainable AI  
+- SHAP analysis  
+- feature engineering  
+- data integration  
+- reproducible pipelines  
 
 ---
 
@@ -444,9 +514,15 @@ python
 
 ---
 
-## Repository description
+## Citation
 
-Constraint-aware machine learning framework for robust vehicle fuel-consumption prediction under distribution shift using interpretable models, physics-informed features, and monotonic constraints.
+If you use this repository:
+
+```text
+Abuelella, E. H. M. (2026).
+Constraint-Aware Machine Learning for Robust Vehicle Fuel Consumption Prediction.
+MSc Thesis, Coventry University.
+```
 
 ---
 
@@ -454,6 +530,6 @@ Constraint-aware machine learning framework for robust vehicle fuel-consumption 
 
 **Eslam H. M. Abuelella**  
 MSc Data Science — Coventry University  
-MSc Geology — Cairo University
+MSc Geology — Cairo University  
 
 Machine Learning | Data Science | Geospatial Analytics | Earth Systems Modelling
